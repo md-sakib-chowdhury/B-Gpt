@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Link, Typography, useTheme } from "@mui/material";
-import { NavLink } from "react-router-dom";
+
 
 const Navbar = () => {
     const theme = useTheme();
@@ -15,12 +15,12 @@ const Navbar = () => {
             <Typography variant="h1" color={"primary"} fontWeight="bold">
                 AI GPT3 Clone
             </Typography>
-            <NavLink to="/register" p={1}>
+            <Link href="/register" p={1}>
                 Sign Up
-            </NavLink>
-            <NavLink to="/login" p={1}>
+            </Link>
+            <Link href="/login" p={1}>
                 Sign In
-            </NavLink>
+            </Link>
         </Box>
     );
 };
