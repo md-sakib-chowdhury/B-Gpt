@@ -25,6 +25,64 @@
 // };
 // exports.loginController = async () => { };
 // exports.logoutCcntroller = async () => { };
+// const User = require('../models/userModel')
+// const errorResponse = require('../utils/errorResponse')
+
+// exports.sendToken = (user, statusCode, res) => {
+//     const token = user.getSignedToken(res);
+//     res.status(statusCode).json({
+//         success: true,
+//         token,
+//     });
+// };
+
+// //REGISTER
+// exports.registerContoller = async (req, res, next) => {
+//     try {
+//         const { username, email, password } = req.body;
+//         //exisitng user
+//         const exisitingEmail = await User.findOne({ email });
+//         if (exisitingEmail) {
+//             return next(new errorResponse("Email is already register", 500));
+//         }
+//         const user = await User.create({ username, email, password });
+//         exports.sendToken(user, 201, res);
+//     } catch (error) {
+//         console.log(error);
+//         next(error);
+//     }
+// };
+// // login
+// exports.loginController = async (req, res, next) => {
+//     try {
+//         const { email, password } = req.body;
+//         //validation
+//         if (!email || !password) {
+//             return next(new errorResponse("Please provide email or password"));
+//         }
+//         const user = await userModel.findOne({ email });
+//         if (!user) {
+//             return next(new errorResponse("Invalid Creditial", 401));
+//         }
+//         const isMatch = await userModel.matchPassword(password);
+//         if (!isMatch) {
+//             return next(new errorHandler("Invalid Creditial", 401));
+//         }
+//         //res
+//         sendToken(user, 200, res);
+//     } catch (error) {
+//         console.log(error);
+//         next(error);
+//     }
+// };
+// //LOGOUT
+// exports.logoutController = async (req, res) => {
+//     res.clearCookie("refreshToken");
+//     return res.status(200).json({
+//         success: true,
+//         message: "Logout Succesfully",
+//     });
+// };
 const User = require('../models/userModel')
 const errorResponse = require('../utils/errorResponse')
 
@@ -52,6 +110,7 @@ exports.registerContoller = async (req, res, next) => {
         next(error);
     }
 };
+
 // login
 exports.loginController = async (req, res, next) => {
     try {
@@ -60,21 +119,22 @@ exports.loginController = async (req, res, next) => {
         if (!email || !password) {
             return next(new errorResponse("Please provide email or password"));
         }
-        const user = await userModel.findOne({ email });
+        const user = await User.findOne({ email });  // ✅ Fixed: userModel -> User
         if (!user) {
-            return next(new errorResponse("Invalid Creditial", 401));
+            return next(new errorResponse("Invalid Credential", 401));
         }
-        const isMatch = await userModel.matchPassword(password);
+        const isMatch = await user.matchPassword(password);  // ✅ Fixed: userModel -> user
         if (!isMatch) {
-            return next(new errorHandler("Invalid Creditial", 401));
+            return next(new errorResponse("Invalid Credential", 401));  // ✅ Fixed: errorHandler -> errorResponse
         }
         //res
-        sendToken(user, 200, res);
+        exports.sendToken(user, 200, res);
     } catch (error) {
         console.log(error);
         next(error);
     }
 };
+
 //LOGOUT
 exports.logoutController = async (req, res) => {
     res.clearCookie("refreshToken");
