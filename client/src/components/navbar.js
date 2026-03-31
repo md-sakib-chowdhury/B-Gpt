@@ -21,6 +21,10 @@ const Navbar = () => {
             <Link href="/login" p={1}>
                 Sign In
             </Link>
+
+            <Link href="/logout" p={1}>
+                logout
+            </Link>
         </Box>
     );
 };

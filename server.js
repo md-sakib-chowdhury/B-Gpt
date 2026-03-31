@@ -27,6 +27,7 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 8080;
 //API routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/openai", require("./routes/openaiRoutes"));
 
 app.listen(PORT, () => {
     console.log(`Server Running in ${process.env.DEV_MODE} mode on port no ${PORT}`.bgCyan.white);
