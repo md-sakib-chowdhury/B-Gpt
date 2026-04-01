@@ -1,26 +1,52 @@
-const OpenAI = require("openai");
+// const OpenAI = require("openai");
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+// const openai = new OpenAI({
+//     apiKey: process.env.OPENAI_API_KEY,
+// });
+
+// exports.summaryController = async (req, res) => {
+//     try {
+//         const { text } = req.body;
+//         const { data } = await openai.createCompletion({
+//             model: "text-davinci-003",
+//             prompt: `Summarize this \n${text}`,
+//             max_tokens: 500,
+//             temperature: 0.5,
+//         });
+//         if (data) {
+//             if (data.choices[0].text) {
+//                 return res.status(200).json(data.choices[0].text);
+//             }
+//         }
+//     } catch (err) {
+//         console.log(err);
+//         return res.status(404).json({
+//             message: err.message,
+//         });
+//     }
+// };
+const Groq = require("groq-sdk");
+
+const groq = new Groq({
+    apiKey: process.env.GROQ_API_KEY,
 });
 
 exports.summaryController = async (req, res) => {
     try {
         const { text } = req.body;
-        const { data } = await openai.createCompletion({
-            model: "text-davinci-003",
-            prompt: `Summarize this \n${text}`,
+        const response = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: [
+                { role: "user", content: `Summarize this:\n${text}` }
+            ],
             max_tokens: 500,
             temperature: 0.5,
         });
-        if (data) {
-            if (data.choices[0].text) {
-                return res.status(200).json(data.choices[0].text);
-            }
-        }
+        const summary = response.choices[0].message.content;
+        return res.status(200).json(summary);
     } catch (err) {
-        console.log(err);
-        return res.status(404).json({
+        console.log(err.message);
+        return res.status(500).json({
             message: err.message,
         });
     }
