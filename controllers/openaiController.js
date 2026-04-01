@@ -7,15 +7,15 @@ const openai = new OpenAI({
 exports.summaryController = async (req, res) => {
     try {
         const { text } = req.body;
-        const response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct",
+        const { data } = await openai.createCompletion({
+            model: "text-davinci-003",
             prompt: `Summarize this \n${text}`,
             max_tokens: 500,
             temperature: 0.5,
         });
-        if (response) {
-            if (response.choices[0].text) {
-                return res.status(200).json(response.choices[0].text);
+        if (data) {
+            if (data.choices[0].text) {
+                return res.status(200).json(data.choices[0].text);
             }
         }
     } catch (err) {

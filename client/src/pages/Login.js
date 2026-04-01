@@ -14,6 +14,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
 
+    //register ctrl
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -22,7 +23,7 @@ const Login = () => {
             localStorage.setItem("authToken", true);
             navigate("/");
         } catch (err) {
-            console.log(err);
+            console.log(error);
             if (err.response.data.error) {
                 setError(err.response.data.error);
             } else if (err.message) {
@@ -57,9 +58,7 @@ const Login = () => {
                     margin="normal"
                     fullWidth
                     value={email}
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}
+                    onChange={(e) => setEmail(e.target.value)}
                 />
                 <TextField
                     label="password"
@@ -68,15 +67,25 @@ const Login = () => {
                     margin="normal"
                     fullWidth
                     value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
-                <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-                    Sign In
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    size="large"
+                    sx={{ mt: 2 }}
+                >
+                    SIGN IN
                 </Button>
                 <Typography mt={2}>
-                    Don't have an account? <a href="/register">Sign Up</a>
+                    Don't have an account?{" "}
+                    <span
+                        onClick={() => navigate("/register")}
+                        style={{ color: "green", cursor: "pointer" }}
+                    >
+                        Sign Up
+                    </span>
                 </Typography>
             </form>
         </Box>
