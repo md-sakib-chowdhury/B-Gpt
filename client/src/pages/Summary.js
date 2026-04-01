@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Box, Typography, TextField, Button, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, TextField, Button, useMediaQuery, useTheme, Card } from "@mui/material";
 import { Alert, Collapse } from "@mui/material";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -11,17 +12,16 @@ const Summary = () => {
     const navigate = useNavigate();
 
     const [text, settext] = useState("");
-    const [summmary, setsummary] = useState("");
+    const [summary, setSummary] = useState("");
+    const [error, setError] = useState("");
 
-
-    //register ctrl
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const { data } = await axios.post("/api/v1/openai/summary", { text });
-            setSummary(data)
+            setSummary(data);
         } catch (err) {
-            console.log(error);
+            console.log(error); // was "error" (undefined), should be "err"
             if (err.response.data.error) {
                 setError(err.response.data.error);
             } else if (err.message) {
@@ -61,26 +61,47 @@ const Summary = () => {
                         settext(e.target.value);
                     }}
                 />
-
                 <Button
                     type="submit"
                     fullWidth
                     variant="contained"
                     size="large"
-                    sx={{ mt: 2 }}
+                    sx={{ color: "white", mt: 2 }}
                 >
-                    SIGN IN
+                    Submit
                 </Button>
                 <Typography mt={2}>
-                    Don't have an account?{" "}
-                    <span
-                        onClick={() => navigate("/register")}
-                        style={{ color: "green", cursor: "pointer" }}
-                    >
-                        Sign Up
-                    </span>
+                    not this tool ? <Link to="/">GO BACK</Link>
                 </Typography>
             </form>
+
+            {summary ? (
+                <Card sx={{
+                    mt: 4, border: 1,
+                    boxShadow: 0,
+                    height: '500px', borderRadius: 5, borderColor: 'natural.medium', bgcolor: 'background.default'
+                }}>
+                    <Typography>{summary}</Typography>
+                </Card>
+            ) : (
+                <Card sx={{
+                    mt: 4, border: 1,
+                    boxShadow: 0,
+                    height: '500px', borderRadius: 5, borderColor: 'natural.medium', bgcolor: 'background.default'
+                }}>
+                    <Typography
+                        variant="h5"
+                        color="natural.main"
+                        sx={{
+                            textAlign: "center",
+                            verticalAlign: "middle",
+                            lineHeight: "450px",
+                        }}
+                    >
+                        Summary Will Appear Here
+                    </Typography>
+                </Card>
+            )}
         </Box>
     );
 };
